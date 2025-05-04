@@ -3,45 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chia sẻ Năng Lượng Tích Cực</title>
-<link rel="stylesheet" href="styles.css"> <!-- Liên kết đến CSS -->
+  <title>Đăng ký tài khoản</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Liên kết CSS -->
 </head>
 <body>
 
-  <h1>Đăng bài viết</h1>
+  <div class="container">
+    <h1>Đăng ký tài khoản</h1>
 
-  <!-- Form đăng ký -->
-  <h2>Đăng ký</h2>
-  <form id="registerForm">
-    <input type="text" id="registerUsername" placeholder="Tên đăng nhập" required><br><br>
-    <input type="password" id="registerPassword" placeholder="Mật khẩu" required><br><br>
-    <button type="submit">Đăng ký</button>
-  </form>
+    <form id="registerForm">
+      <!-- Tên đăng nhập -->
+      <div class="form-group">
+        <label for="username">Tên đăng nhập</label>
+        <input type="text" id="username" name="username" placeholder="Nhập tên đăng nhập" required>
+      </div>
 
-  <!-- Form đăng nhập -->
-  <h2>Đăng nhập</h2>
-  <form id="loginForm">
-    <input type="text" id="loginUsername" placeholder="Tên đăng nhập" required><br><br>
-    <input type="password" id="loginPassword" placeholder="Mật khẩu" required><br><br>
-    <button type="submit">Đăng nhập</button>
-  </form>
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Nhập email" required>
+      </div>
 
-  <h2>Đăng bài viết</h2>
-  <form id="postForm">
-    <input type="text" id="title" placeholder="Tiêu đề" required><br><br>
-    <textarea id="content" rows="5" placeholder="Nội dung" required></textarea><br><br>
-    <input type="url" id="link" placeholder="Liên kết (nếu có)"><br><br>
-    <button type="submit">Đăng bài</button>
-  </form>
+      <!-- Mật khẩu -->
+      <div class="form-group">
+        <label for="password">Mật khẩu</label>
+        <input type="password" id="password" name="password" placeholder="Nhập mật khẩu" required>
+      </div>
 
-  <h2>Bài viết đã đăng:</h2>
-  <div id="postsContainer"></div>
+      <!-- Xác nhận mật khẩu -->
+      <div class="form-group">
+        <label for="confirmPassword">Xác nhận mật khẩu</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Nhập lại mật khẩu" required>
+      </div>
 
-  <form id="editForm" style="display:none;">
-    <input type="text" id="editTitle" placeholder="Tiêu đề" required><br><br>
-    <textarea id="editContent" rows="5" placeholder="Nội dung" required></textarea><br><br>
-    <input type="url" id="editLink" placeholder="Liên kết (nếu có)"><br><br>
-    <button type="submit">Chỉnh sửa bài</button>
-  </form>
+      <!-- Nút đăng ký -->
+      <button type="submit">Đăng ký</button>
+    </form>
+
+    <p>Đã có tài khoản? <a href="login.html">Đăng nhập tại đây</a></p>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
