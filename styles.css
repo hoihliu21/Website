@@ -1,277 +1,73 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng bài viết</title>
-  <style>
-    /* Tổng quan */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-      color: #333;
-    }
+/* Tổng quan */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+}
 
-    .container {
-      width: 80%;
-      margin: 0 auto;
-      padding-top: 30px;
-    }
+.container {
+  width: 80%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding-top: 50px;
+}
 
-    h1, h2 {
-      text-align: center;
-      color: #333;
-    }
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
 
-    /* Form đăng ký, đăng nhập, đăng bài */
-    form {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      margin: 20px 0;
-    }
+/* Định dạng form */
+form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-    input, textarea {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 16px;
-    }
+.form-group {
+  margin-bottom: 20px;
+}
 
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      font-size: 16px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
 
-    button:hover {
-      background-color: #45a049;
-    }
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
 
-    /* Bài viết */
-    .post {
-      background-color: white;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-    .post h3 {
-      margin-top: 0;
-      color: #333;
-    }
+button:hover {
+  background-color: #45a049;
+}
 
-    .post p {
-      font-size: 16px;
-      line-height: 1.6;
-    }
+a {
+  color: #007bff;
+  text-decoration: none;
+}
 
-    .post button {
-      background-color: #f44336;
-      border: none;
-      color: white;
-      padding: 10px;
-      margin-right: 10px;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .post button:hover {
-      background-color: #e53935;
-    }
-
-    .post a {
-      color: #007bff;
-      text-decoration: none;
-    }
-
-    .post a:hover {
-      text-decoration: underline;
-    }
-
-    /* Form chỉnh sửa bài viết */
-    #editForm {
-      display: none;
-    }
-
-    /* Các thông báo */
-    .alert {
-      background-color: #f44336;
-      color: white;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 4px;
-    }
-
-    .alert.success {
-      background-color: #4CAF50;
-    }
-
-    .alert.info {
-      background-color: #2196F3;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <h1>Đăng bài viết</h1>
-
-    <!-- Form đăng ký -->
-    <h2>Đăng ký</h2>
-    <form id="registerForm">
-      <input type="text" id="registerUsername" placeholder="Tên đăng nhập" required><br><br>
-      <input type="password" id="registerPassword" placeholder="Mật khẩu" required><br><br>
-      <button type="submit">Đăng ký</button>
-    </form>
-
-    <!-- Form đăng nhập -->
-    <h2>Đăng nhập</h2>
-    <form id="loginForm">
-      <input type="text" id="loginUsername" placeholder="Tên đăng nhập" required><br><br>
-      <input type="password" id="loginPassword" placeholder="Mật khẩu" required><br><br>
-      <button type="submit">Đăng nhập</button>
-    </form>
-
-    <!-- Form đăng bài viết -->
-    <h2>Đăng bài viết</h2>
-    <form id="postForm">
-      <input type="text" id="title" placeholder="Tiêu đề" required><br><br>
-      <textarea id="content" rows="5" placeholder="Nội dung" required></textarea><br><br>
-      <input type="url" id="link" placeholder="Liên kết (nếu có)"><br><br>
-      <button type="submit">Đăng bài</button>
-    </form>
-
-    <h2>Bài viết đã đăng:</h2>
-    <div id="postsContainer"></div>
-
-    <!-- Form chỉnh sửa bài viết -->
-    <form id="editForm">
-      <input type="text" id="editTitle" placeholder="Tiêu đề" required><br><br>
-      <textarea id="editContent" rows="5" placeholder="Nội dung" required></textarea><br><br>
-      <input type="url" id="editLink" placeholder="Liên kết (nếu có)"><br><br>
-      <button type="submit">Chỉnh sửa bài</button>
-    </form>
-  </div>
-
-  <script>
-    const form = document.getElementById('postForm');
-    const postsContainer = document.getElementById('postsContainer');
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const editForm = document.getElementById('editForm');
-
-    let editingPostId = null;
-    let token = localStorage.getItem('token');
-
-    async function loadPosts() {
-      const res = await fetch('http://localhost:3000/posts');
-      const posts = await res.json();
-      postsContainer.innerHTML = '';
-      posts.forEach(post => {
-        const postEl = document.createElement('div');
-        postEl.className = 'post';
-        postEl.innerHTML = `
-          <h3>${post.title}</h3>
-          <p>${post.content}</p>
-          ${post.link ? `<p><a href="${post.link}" target="_blank">🔗 Xem liên kết</a></p>` : ''}
-          <button onclick="deletePost('${post._id}')">Xóa</button>
-          <button onclick="showEditForm(${JSON.stringify(post)})">Chỉnh sửa</button>
-        `;
-        postsContainer.appendChild(postEl);
-      });
-    }
-
-    async function deletePost(id) {
-      await fetch(`http://localhost:3000/posts/${id}`, { method: 'DELETE' });
-      loadPosts();
-    }
-
-    function showEditForm(post) {
-      document.getElementById('editForm').style.display = 'block';
-      document.getElementById('editTitle').value = post.title;
-      document.getElementById('editContent').value = post.content;
-      document.getElementById('editLink').value = post.link;
-      editingPostId = post._id;
-    }
-
-    document.getElementById('editForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const title = document.getElementById('editTitle').value;
-      const content = document.getElementById('editContent').value;
-      const link = document.getElementById('editLink').value;
-
-      await fetch(`http://localhost:3000/posts/${editingPostId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content, link })
-      });
-
-      loadPosts();
-      document.getElementById('editForm').reset();
-      document.getElementById('editForm').style.display = 'none';
-    });
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const title = document.getElementById('title').value;
-      const content = document.getElementById('content').value;
-      const link = document.getElementById('link').value;
-
-      await fetch('http://localhost:3000/posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ title, content, link })
-      });
-
-      form.reset();
-      loadPosts();
-    });
-
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const username = document.getElementById('loginUsername').value;
-      const password = document.getElementById('loginPassword').value;
-
-      const res = await fetch('http://localhost:3000/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-
-      const data = await res.json();
-      localStorage.setItem('token', data.token);
-      token = data.token;
-      alert('Đăng nhập thành công!');
-    });
-
-    registerForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const username = document.getElementById('registerUsername').value;
-      const password = document.getElementById('registerPassword').value;
-
-      await fetch('http://localhost:3000/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-
-      alert('Đăng ký thành công!');
-    });
-
-    loadPosts();
-  </script>
-
-</body>
-</html>
+a:hover {
+  text-decoration: underline;
+}
