@@ -2,6 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng bài viết</title>
   <style>
     body { font-family: Arial; width: 600px; margin: auto; }
@@ -12,47 +13,146 @@
 <body>
 
   <h1>Đăng bài viết</h1>
+
+  <!-- Form đăng ký -->
+  <h2>Đăng ký</h2>
+  <form id="registerForm">
+    <input type="text" id="registerUsername" placeholder="Tên đăng nhập" required><br><br>
+    <input type="password" id="registerPassword" placeholder="Mật khẩu" required><br><br>
+    <button type="submit">Đăng ký</button>
+  </form>
+
+  <!-- Form đăng nhập -->
+  <h2>Đăng nhập</h2>
+  <form id="loginForm">
+    <input type="text" id="loginUsername" placeholder="Tên đăng nhập" required><br><br>
+    <input type="password" id="loginPassword" placeholder="Mật khẩu" required><br><br>
+    <button type="submit">Đăng nhập</button>
+  </form>
+
+  <h2>Đăng bài viết</h2>
   <form id="postForm">
     <input type="text" id="title" placeholder="Tiêu đề" required><br><br>
     <textarea id="content" rows="5" placeholder="Nội dung" required></textarea><br><br>
+    <input type="url" id="link" placeholder="Liên kết (nếu có)"><br><br>
     <button type="submit">Đăng bài</button>
   </form>
 
   <h2>Bài viết đã đăng:</h2>
   <div id="postsContainer"></div>
 
+  <form id="editForm" style="display:none;">
+    <input type="text" id="editTitle" placeholder="Tiêu đề" required><br><br>
+    <textarea id="editContent" rows="5" placeholder="Nội dung" required></textarea><br><br>
+    <input type="url" id="editLink" placeholder="Liên kết (nếu có)"><br><br>
+    <button type="submit">Chỉnh sửa bài</button>
+  </form>
+
   <script>
     const form = document.getElementById('postForm');
     const postsContainer = document.getElementById('postsContainer');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const editForm = document.getElementById('editForm');
+
+    let editingPostId = null;
+    let token = localStorage.getItem('token');
 
     async function loadPosts() {
       const res = await fetch('http://localhost:3000/posts');
       const posts = await res.json();
       postsContainer.innerHTML = '';
       posts.forEach(post => {
-        const el = document.createElement('div');
-        el.className = 'post';
-        el.innerHTML = `<h3>${post.title}</h3><p>${post.content}</p>`;
-        postsContainer.appendChild(el);
+        const postEl = document.createElement('div');
+        postEl.className = 'post';
+        postEl.innerHTML = `
+          <h3>${post.title}</h3>
+          <p>${post.content}</p>
+          ${post.link ? `<p><a href="${post.link}" target="_blank">🔗 Xem liên kết</a></p>` : ''}
+          <button onclick="deletePost('${post._id}')">Xóa</button>
+          <button onclick="showEditForm(${JSON.stringify(post)})">Chỉnh sửa</button>
+        `;
+        postsContainer.appendChild(postEl);
       });
     }
+
+    async function deletePost(id) {
+      await fetch(`http://localhost:3000/posts/${id}`, { method: 'DELETE' });
+      loadPosts();
+    }
+
+    function showEditForm(post) {
+      document.getElementById('editForm').style.display = 'block';
+      document.getElementById('editTitle').value = post.title;
+      document.getElementById('editContent').value = post.content;
+      document.getElementById('editLink').value = post.link;
+      editingPostId = post._id;
+    }
+
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('editTitle').value;
+      const content = document.getElementById('editContent').value;
+      const link = document.getElementById('editLink').value;
+
+      await fetch(`http://localhost:3000/posts/${editingPostId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, content, link })
+      });
+
+      loadPosts();
+      document.getElementById('editForm').reset();
+      document.getElementById('editForm').style.display = 'none';
+    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const title = document.getElementById('title').value;
       const content = document.getElementById('content').value;
+      const link = document.getElementById('link').value;
 
       await fetch('http://localhost:3000/posts', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content })
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ title, content, link })
       });
 
       form.reset();
       loadPosts();
     });
 
-    // Load bài viết khi trang mở
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+
+      const res = await fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+      localStorage.setItem('token', data.token);
+      token = data.token;
+      alert('Đăng nhập thành công!');
+    });
+
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('registerUsername').value;
+      const password = document.getElementById('registerPassword').value;
+
+      await fetch('http://localhost:3000/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      alert('Đăng ký thành công!');
+    });
+
     loadPosts();
   </script>
 
